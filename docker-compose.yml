@@ -1,0 +1,85 @@
+services:
+  redis:
+    image: redis:8.0.0
+    container_name: redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai_network
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - ai_network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    # GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  telegram-bot:
+    build: .
+    container_name: telegram-bot
+    depends_on:
+      - redis
+      - ollama
+    environment:
+      - API_TOKEN=${API_TOKEN}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+    networks:
+      - ai_network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+  worker:
+    build: .
+    container_name: rq-worker
+    command: python worker.py
+    depends_on:
+      - redis
+      - ollama
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+    networks:
+      - ai_network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+networks:
+  ai_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  ollama_data:

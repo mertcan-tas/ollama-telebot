@@ -1,0 +1,58 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Run Bot",
+      "type": "shell",
+      "command": "python bot.py",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "Error:.*",
+          "message": 1
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "close": false,
+        "focus": true
+      }
+    },
+    {
+      "label": "2. Docker Compose Up",
+      "type": "shell",
+      "command": "docker-compose up -d --build",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "close": true,
+        "focus": true
+      }
+    },
+    {
+      "label": "3. Docker Compose Down",
+      "type": "shell",
+      "command": "docker-compose down -v",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "close": true,
+        "focus": true
+      }
+    },
+  ]
+}

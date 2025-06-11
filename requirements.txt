@@ -1,0 +1,7 @@
+pyTelegramBotAPI==4.14.0
+python-decouple==3.8
+termcolor==2.3.0
+redis==5.0.1
+rq==1.16.2
+requests==2.31.0
+ollama==0.2.1
