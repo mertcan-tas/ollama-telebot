@@ -10,6 +10,11 @@ Advanced Telegram bot system running with Ollama AI model and Redis RQ task queu
 - **Monitoring**: System status monitoring
 - **Scalable**: Horizontally scalable worker system
 
+
+## Preview
+
+![](https://raw.githubusercontent.com/mertcan-tas/ollama-telebot/refs/heads/master/images/preview.gif)
+
 ## 📁 Project Structure
 
 ```
